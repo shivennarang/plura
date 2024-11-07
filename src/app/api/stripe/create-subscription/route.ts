@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       subscriptionExists.Subscription.active
     ) {
       //update the subscription instead of creating one.
-      if (!subscriptionExists.Subscription.subscritiptionId) {
+      if (!subscriptionExists?.Subscription?.subscritiptionId) {
         throw new Error(
           'Could not find the subscription Id to update the subscription.'
         )
@@ -65,6 +65,7 @@ export async function POST(req: Request) {
       return NextResponse.json({
         subscriptionId: subscription.id,
         //@ts-ignore
+
         clientSecret: subscription.latest_invoice.payment_intent.client_secret,
       })
     }
