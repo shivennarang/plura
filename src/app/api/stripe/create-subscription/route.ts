@@ -1,7 +1,8 @@
+import { db } from "@/lib/db"
+import { stripe } from "@/lib/stripe"
+import { NextResponse } from "next/server"
 
-import { db } from '@/lib/db'
-import { stripe } from '@/lib/stripe'
-import { NextResponse } from 'next/server'
+
 
 export async function POST(req: Request) {
   const { customerId, priceId } = await req.json()
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
       subscriptionExists.Subscription.active
     ) {
       //update the subscription instead of creating one.
-      if (!subscriptionExists.Subscription.subscritiptionId) {
+      if (!subscriptionExists?.Subscription?.subscritiptionId) {
         throw new Error(
           'Could not find the subscription Id to update the subscription.'
         )
