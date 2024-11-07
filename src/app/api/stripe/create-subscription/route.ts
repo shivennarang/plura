@@ -1,32 +1,23 @@
-
 import { db } from '@/lib/db'
 import { stripe } from '@/lib/stripe'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
   const { customerId, priceId } = await req.json()
-  if (!customerId || !priceId)
+  if (!customerId || !priceId) {
     return new NextResponse('Customer Id or price id is missing', {
       status: 400,
     })
-
-  const subscriptionExists = await db.agency.findFirst({
-    where: { customerId },
-    include: { Subscription: true },
-  })
+  }
 
   try {
-    if (
-      subscriptionExists?.Subscription?.subscritiptionId &&
-      subscriptionExists.Subscription.active
-    ) {
-      //update the subscription instead of creating one.
-      if (!subscriptionExists?.Subscription?.subscritiptionId) {
-        throw new Error(
-          'Could not find the subscription Id to update the subscription.'
-        )
-      }
-      console.log('Updating the subscription')
+    const subscriptionExists = await db.agency.findFirst({
+      where: { customerId },
+      include: { Subscription: true },
+    })
+
+    if (subscriptionExists?.Subscription?.subscritiptionId && subscriptionExists.Subscription.active) {
+      // Update existing subscription
       const currentSubscriptionDetails = await stripe.subscriptions.retrieve(
         subscriptionExists.Subscription.subscritiptionId
       )
@@ -37,40 +28,57 @@ export async function POST(req: Request) {
           items: [
             {
               id: currentSubscriptionDetails.items.data[0].id,
-              deleted: true,
+              price: priceId,
             },
-            { price: priceId },
           ],
           expand: ['latest_invoice.payment_intent'],
         }
       )
+
+      // Access 'payment_intent' safely
+      const latestInvoice = subscription.latest_invoice;
+      let clientSecret = null;
+
+      if (typeof latestInvoice !== 'string' && latestInvoice?.payment_intent) {
+        const paymentIntent = latestInvoice.payment_intent;
+        if (typeof paymentIntent !== 'string') {
+          clientSecret = paymentIntent.client_secret;
+        }
+      }
+
       return NextResponse.json({
         subscriptionId: subscription.id,
-        //@ts-ignore
-        clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+        clientSecret: clientSecret,
       })
+
     } else {
-      console.log('Createing a sub')
+      // Create a new subscription
       const subscription = await stripe.subscriptions.create({
         customer: customerId,
-        items: [
-          {
-            price: priceId,
-          },
-        ],
+        items: [{ price: priceId }],
         payment_behavior: 'default_incomplete',
         payment_settings: { save_default_payment_method: 'on_subscription' },
         expand: ['latest_invoice.payment_intent'],
       })
+
+      // Access 'payment_intent' safely
+      const latestInvoice = subscription.latest_invoice;
+      let clientSecret = null;
+
+      if (typeof latestInvoice !== 'string' && latestInvoice?.payment_intent) {
+        const paymentIntent = latestInvoice.payment_intent;
+        if (typeof paymentIntent !== 'string') {
+          clientSecret = paymentIntent.client_secret;
+        }
+      }
+
       return NextResponse.json({
         subscriptionId: subscription.id,
-        //@ts-ignore
-
-        clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+        clientSecret: clientSecret,
       })
     }
   } catch (error) {
-    console.log('🔴 Error', error)
+    console.error('🔴 Error', error)
     return new NextResponse('Internal Server Error', {
       status: 500,
     })
