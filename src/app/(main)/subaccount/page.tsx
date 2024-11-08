@@ -1,4 +1,5 @@
 
+"use client"
 import Unauthorized from '@/components/unauthorized'
 import { getAuthUserDetails, verifyAndAcceptInvitation } from '@/lib/queries'
 import { redirect } from 'next/navigation'
@@ -9,7 +10,7 @@ type Props = {
 }
 
 const SubAccountMainPage = async ({ searchParams }: Props) => {
-  await searchParams;
+  
   const agencyId = await verifyAndAcceptInvitation()
     console.log("main page subaccount",agencyId)
   if (!agencyId) {

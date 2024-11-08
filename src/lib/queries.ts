@@ -252,11 +252,7 @@ export const upsertAgency = async (agency: Agency, price?: Plan) => {
               icon: 'clipboardIcon',
               link: `/agency/${agency.id}/launchpad`,
             },
-            {
-              name: 'Billing',
-              icon: 'payment',
-              link: `/agency/${agency.id}/billing`,
-            },
+           
             {
               name: 'Settings',
               icon: 'settings',

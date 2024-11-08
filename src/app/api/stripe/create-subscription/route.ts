@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     where: { customerId },
     include: { Subscription: true },
   })
-
+console.log("subscriptionExists",subscriptionExists)
   try {
     if (
       subscriptionExists?.Subscription?.subscritiptionId &&
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       const currentSubscriptionDetails = await stripe.subscriptions.retrieve(
         subscriptionExists.Subscription.subscritiptionId
       )
-
+      console.log("currentSubscriptionDetails",currentSubscriptionDetails)
       const subscription = await stripe.subscriptions.update(
         subscriptionExists.Subscription.subscritiptionId,
         {
@@ -44,9 +44,10 @@ export async function POST(req: Request) {
           expand: ['latest_invoice.payment_intent'],
         }
       )
+     console.log("subscription",subscription)
       return NextResponse.json({
         subscriptionId: subscription.id,
-        //@ts-ignore
+        // @ts-ignore
         clientSecret: subscription.latest_invoice.payment_intent.client_secret,
       })
     } else {
@@ -62,10 +63,11 @@ export async function POST(req: Request) {
         payment_settings: { save_default_payment_method: 'on_subscription' },
         expand: ['latest_invoice.payment_intent'],
       })
+      console.log("subscription123123123",subscription)
       return NextResponse.json({
         subscriptionId: subscription.id,
-        //@ts-ignore
-        clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+      // @ts-ignore
+        clientSecret: subscription?.latest_invoice!.payment_intent!.client_secret,
       })
     }
   } catch (error) {
