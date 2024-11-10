@@ -1,16 +1,17 @@
 "use client"
-import CreatePipelineForm from '@/components/forms/create-pipeline-form';
-import CustomModal from '@/components/global/custom-model';
-import { Button } from '@/components/ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { useModal } from '@/providers/modal-provider';
-import { Pipeline } from '@prisma/client';
-import { Check, ChevronsUpDown, Plus } from 'lucide-react';
-import Link from 'next/link';
-import React from 'react';
+import CreatePipelineForm from "@/components/forms/create-pipeline-form"
+import CustomModal from "@/components/global/custom-model"
+import { Button } from "@/components/ui/button"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { useModal } from "@/providers/modal-provider"
+import { Pipeline } from "@prisma/client"
+import { Check, ChevronsUpDown, Plus } from "lucide-react"
+import Link from "next/link"
+import React from "react"
+
 type Props = {
     subAccountId: string
     pipelines: Pipeline[]
@@ -55,9 +56,11 @@ const PipelineInfoBar = ({  pipelineId, subAccountId ,pipelines}:Props) => {
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
             <Command>
-            <CommandEmpty>No pipelines found.</CommandEmpty>
-            <CommandGroup>
-            {Array.isArray(pipelines) && copiedPipelines.length > 0 ? (
+
+  <CommandList>
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandGroup heading="Suggestions">
+    {copiedPipelines.length > 0 ? (
                 copiedPipelines.map((pipeline) => (
                     <Link
                     key={pipeline.id}
@@ -92,8 +95,10 @@ const PipelineInfoBar = ({  pipelineId, subAccountId ,pipelines}:Props) => {
                   <Plus size={15} />
                   Create Pipeline
                 </Button>
-            </CommandGroup>
-            </Command>
+    </CommandGroup>
+   
+  </CommandList>
+</Command>
             </PopoverContent>
         </Popover>
            </div>
