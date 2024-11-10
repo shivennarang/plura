@@ -15,7 +15,7 @@ import { Contact, SubAccount, Ticket } from '@prisma/client'
 
 import React from 'react'
 import CraeteContactButton from './_components/create-contact-btn'
-import { format } from 'date-fns'
+import {format} from 'date-fns'
 
 
 type Props = {
