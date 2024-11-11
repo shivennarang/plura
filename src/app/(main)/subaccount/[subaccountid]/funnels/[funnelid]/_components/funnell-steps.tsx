@@ -182,7 +182,7 @@ const FunnelSteps = ({ funnel, funnelId, pages, subaccountId }: Props) => {
                     >
                       <ExternalLink size={15} />
                       <div className="w-64 overflow-hidden overflow-ellipsis ">
-                      {`/subaccount/${subaccountId}/funnels/${funnelId}/editor/${clickedPage?.id}`}
+                      Unleash Your Creativity - Start Building Your Perfect Website Now!
                       </div>
                     </Link>
                   </div>
