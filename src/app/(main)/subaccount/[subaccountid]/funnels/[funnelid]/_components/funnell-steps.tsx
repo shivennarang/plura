@@ -177,15 +177,12 @@ const FunnelSteps = ({ funnel, funnelId, pages, subaccountId }: Props) => {
                     </Link>
 
                     <Link
-                      target="_blank"
-                      href={`${process.env.NEXT_PUBLIC_SCHEME}${funnel.subDomainName}.${process.env.NEXT_PUBLIC_DOMAIN}/${clickedPage?.pathName}`}
-                      className="group flex items-center justify-start p-2 gap-2 hover:text-primary transition-colors duration-200"
+                      href={`/subaccount/${subaccountId}/funnels/${funnelId}/editor/${clickedPage?.id}`}
+                      className="relative group"
                     >
                       <ExternalLink size={15} />
                       <div className="w-64 overflow-hidden overflow-ellipsis ">
-                        {process.env.NEXT_PUBLIC_SCHEME}
-                        {funnel.subDomainName}.{process.env.NEXT_PUBLIC_DOMAIN}/
-                        {clickedPage?.pathName}
+                      {`/subaccount/${subaccountId}/funnels/${funnelId}/editor/${clickedPage?.id}`}
                       </div>
                     </Link>
                   </div>
